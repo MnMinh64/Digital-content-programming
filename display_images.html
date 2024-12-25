@@ -134,60 +134,7 @@
   });
   
   // Function to call OpenAI API directly
-  async function generateImageDescription(imageSrc) {
-      const apiUrl = "https://api.openai.com/v1/completions"; // OpenAI API endpoint
-      const apiKey = ""; 
   
-      const prompt = `Generate a detailed description for an image with the URL: ${imageSrc}`;
-  
-      try {
-          const response = await fetch(apiUrl, {
-              method: "POST",
-              headers: {
-                  "Content-Type": "application/json",
-                  Authorization: `Bearer ${apiKey}`,
-              },
-              body: JSON.stringify({
-                  model: "text-davinci-003",
-                  prompt: prompt,
-                  max_tokens: 100,
-              }),
-          });
-  
-          if (!response.ok) {
-              const error = await response.json();
-              console.error("OpenAI Error:", error);
-              throw new Error(error.error.message);
-          }
-  
-          const data = await response.json();
-          return data.choices[0].text.trim();
-      } catch (error) {
-          console.error("Error generating description:", error);
-          throw error;
-      }
-  }
-  
-  // Open modal and use AI to generate information
-  async function openModal(img) {
-      modal.style.display = "block";
-      modalImg.src = img.src;
-      currentImageSrc = img.src;
-  
-      // Generate or load image information
-      if (!imageInfoMap[currentImageSrc]) {
-          infoText.value = "Generating information...";
-          try {
-              const generatedInfo = await generateImageDescription(img.src);
-              imageInfoMap[currentImageSrc] = generatedInfo;
-              infoText.value = generatedInfo;
-          } catch (error) {
-              infoText.value = "Failed to generate information. Please try again.";
-          }
-      } else {
-          infoText.value = imageInfoMap[currentImageSrc];
-      }
-  }
   
   // Close modal
   span.onclick = function() {
