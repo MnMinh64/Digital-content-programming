@@ -5,28 +5,29 @@
 <style>
   .gallery {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    grid-template-columns: repeat(3, 1fr); /* 3 columns for the first row */
     gap: 20px;
   }
 
   .container {
     display: flex;
     flex-direction: column;
-    align-items: center;
-    cursor: pointer; /* Hand cursor on hover */
+    align-items: center; /* Center horizontally */
+    cursor: pointer; /* Add hand cursor on hover */
   }
 
   img {
-    width: 100%;
-    height: auto;
+    width: 100%; /* Width 100% of container size */
+    height: auto; /* Height adjusts automatically based on ratio */
     object-fit: cover;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease; /* Smooth transition effect */
   }
 
   .container:hover img {
-    transform: scale(1.1); /* Zoom effect on hover */
+    transform: scale(1.1); /* Zoom image on hover */
   }
 
+  /* CSS for modal */
   .modal {
     display: none;
     position: fixed;
@@ -36,7 +37,8 @@
     width: 100%;
     height: 100%;
     overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4);
+    background-color: rgb(0,0,0);
+    background-color: rgba(0,0,0,0.4);
     padding-top: 60px;
   }
 
@@ -46,8 +48,6 @@
     padding: 20px;
     border: 1px solid #888;
     width: 60%;
-    display: flex; /* Display as a row */
-    gap: 20px; /* Space between image and info */
   }
 
   .close {
@@ -63,92 +63,55 @@
     text-decoration: none;
     cursor: pointer;
   }
-
-  .info-section {
-    flex: 1; /* Take up remaining space */
-    display: flex;
-    flex-direction: column;
-  }
-
-  .info-section textarea {
-    width: 100%;
-    height: 100px;
-    resize: none;
-  }
-
-  .modal-image {
-    flex: 1; /* Take up equal space */
-  }
-
-  .modal-image img {
-    width: 100%;
-    height: auto;
-  }
 </style>
 </head>
 <body>
 
-<div class="gallery" id="gallery"></div>
-
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <div class="modal-image">
-      <img id="modalImage" src="" alt="Selected Image">
-    </div>
-    <div class="info-section">
-      <h3>Image Information</h3>
-      <textarea id="imageInfo" placeholder="Generating information..."></textarea>
-      <button onclick="saveInfo()">Save Information</button>
-    </div>
-    <span class="close">&times;</span>
+<div class="gallery">
+  <div class="container">
+    <img src="image/image_1.jpg" alt="Image 1" onclick="openModal(this)">
+    <p>Caption for Image 1</p>
+  </div>
+  <div class="container">
+    <img src="image/image_2.jpg" alt="Image 2" onclick="openModal(this)">
+    <p>Caption for Image 2</p>
+  </div>
+  <div class="container">
+    <img src="image/image_12.jpg" alt="Image 12" onclick="openModal(this)">
+    <p>Caption for Image 12</p>
   </div>
 </div>
 
+<div id="myModal" class="modal">
+
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img id="modalImage" src="" style="width: 100%;">
+  </div>
+
+</div>
+
 <script>
-  // Store image information in memory
-  const imageInfoMap = {};
-  
-  // Get modal elements
-  var modal = document.getElementById("myModal");
-  var modalImg = document.getElementById("modalImage");
-  var infoText = document.getElementById("imageInfo");
-  var span = document.getElementsByClassName("close")[0];
-  
-  var currentImageSrc = "";
-  
-  // Dynamically load 12 images into the gallery
-  const imagePaths = Array.from({ length: 12 }, (_, i) => `image/image_${i + 1}.jpg`);
-  const gallery = document.getElementById("gallery");
-  
-  imagePaths.forEach((src) => {
-    const container = document.createElement("div");
-    container.classList.add("container");
-  
-    const img = document.createElement("img");
-    img.src = src;
-    img.alt = `Image ${src}`;
-    img.onclick = () => openModal(img);
-  
-    container.appendChild(img);
-    gallery.appendChild(container);
-  });
-  
-  // Function to call OpenAI API directly
-  
-  
-  // Close modal
-  span.onclick = function() {
-      modal.style.display = "none";
-  }
-  
-  // Save info
-  function saveInfo() {
-      const info = infoText.value.trim();
-      imageInfoMap[currentImageSrc] = info;
-      alert("Information saved!");
-  }
-  </script>
-  
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get image in modal
+var modalImg = document.getElementById("modalImage");
+
+// Get close button
+var span = document.getElementsByClassName("close")[0];
+
+// Function to open modal
+function openModal(img) {
+  modal.style.display = "block";
+  modalImg.src = img.src;
+}
+
+// Close modal when clicking on close button
+span.onclick = function() {
+  modal.style.display = "none";
+}
+</script>
 
 </body>
 </html>
