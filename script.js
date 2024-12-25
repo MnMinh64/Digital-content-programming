@@ -13,7 +13,7 @@ async function searchImages() {
     // Hiển thị loader khi bắt đầu quá trình tải
     loader.style.display = 'block';
 
-    const apiKey = 'AIzaSyBCaNPH0weCZWjtmzBKK139z7pvb_0qIuE'; // Thay bằng API Key của bạn
+    const apiKey = 'AIzaSyAHd3wZmBaB7grHVIZCp4KMDiAVydAfjTE'; // Thay bằng API Key của bạn
     const cx = '85535eaf9fbc34732'; // Thay bằng Custom Search Engine ID của bạn
     const numImagesToDownload = 12;
     const numImagesPerRequest = 10; // Số hình ảnh mỗi lần yêu cầu
