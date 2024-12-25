@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -7,49 +5,49 @@
 <style>
   .gallery {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 cột cho hàng đầu tiên */
-    gap: 20px; 
+    grid-template-columns: repeat(3, 1fr); /* 3 columns per row */
+    gap: 20px;
   }
 
   .container {
     display: flex;
     flex-direction: column;
-    align-items: center; /* Căn giữa theo chiều ngang */
-    cursor: pointer; /* Thêm con trỏ chuột dạng bàn tay khi hover */
+    align-items: center;
+    cursor: pointer; /* Hand cursor on hover */
   }
 
   img {
-    width: 100%; /* Chiều rộng bằng 100% kích thước container */
-    height: auto; /* Chiều cao tự động điều chỉnh theo tỷ lệ */
+    width: 100%;
+    height: auto;
     object-fit: cover;
-    transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi mượt mà */
+    transition: transform 0.3s ease;
   }
 
   .container:hover img {
-    transform: scale(1.1); /* Phóng to hình ảnh khi hover */
+    transform: scale(1.1); /* Zoom effect on hover */
   }
 
-  /* CSS cho modal */
   .modal {
-    display: none; 
-    position: fixed; 
-    z-index: 1; 
+    display: none;
+    position: fixed;
+    z-index: 1;
     left: 0;
     top: 0;
-    width: 100%; 
-    height: 100%; 
-    overflow: auto; 
-    background-color: rgb(0,0,0); 
-    background-color: rgba(0,0,0,0.4); 
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
     padding-top: 60px;
   }
 
   .modal-content {
     background-color: #fefefe;
-    margin: 5% auto; 
+    margin: 5% auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 60%; 
+    width: 60%;
+    display: flex; /* Display as a row */
+    gap: 20px; /* Space between image and info */
   }
 
   .close {
@@ -65,79 +63,145 @@
     text-decoration: none;
     cursor: pointer;
   }
+
+  .info-section {
+    flex: 1; /* Take up remaining space */
+    display: flex;
+    flex-direction: column;
+  }
+
+  .info-section textarea {
+    width: 100%;
+    height: 100px;
+    resize: none;
+  }
+
+  .modal-image {
+    flex: 1; /* Take up equal space */
+  }
+
+  .modal-image img {
+    width: 100%;
+    height: auto;
+  }
 </style>
 </head>
 <body>
 
-<div class="gallery">
-    <div class="container">
-      <img src="image/image_1.jpg" alt="Image 1" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_2.jpg" alt="Image 2" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_3.jpg" alt="Image 3" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_4.jpg" alt="Image 4" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_5.jpg" alt="Image 5" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_6.jpg" alt="Image 6" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_7.jpg" alt="Image 7" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_8.jpg" alt="Image 8" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_9.jpg" alt="Image 9" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_10.jpg" alt="Image 10" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_11.jpg" alt="Image 11" onclick="openModal(this)">
-    </div>
-    <div class="container">
-      <img src="image/image_12.jpg" alt="Image 12" onclick="openModal(this)">
-    </div>
-</div>
+<div class="gallery" id="gallery"></div>
 
 <div id="myModal" class="modal">
-
   <div class="modal-content">
+    <div class="modal-image">
+      <img id="modalImage" src="" alt="Selected Image">
+    </div>
+    <div class="info-section">
+      <h3>Image Information</h3>
+      <textarea id="imageInfo" placeholder="Generating information..."></textarea>
+      <button onclick="saveInfo()">Save Information</button>
+    </div>
     <span class="close">&times;</span>
-    <img id="modalImage" src="" style="width: 100%;">
   </div>
-
 </div>
 
 <script>
-// Lấy modal
-var modal = document.getElementById("myModal");
-
-// Lấy ảnh trong modal
-var modalImg = document.getElementById("modalImage");
-
-// Lấy nút close
-var span = document.getElementsByClassName("close")[0];
-
-// Hàm mở modal
-function openModal(img) {
-  modal.style.display = "block";
-  modalImg.src = img.src;
-}
-
-// Đóng modal khi click vào nút close
-span.onclick = function() { 
-  modal.style.display = "none";
-}
-</script>
+  // Store image information in memory
+  const imageInfoMap = {};
+  
+  // Get modal elements
+  var modal = document.getElementById("myModal");
+  var modalImg = document.getElementById("modalImage");
+  var infoText = document.getElementById("imageInfo");
+  var span = document.getElementsByClassName("close")[0];
+  
+  var currentImageSrc = "";
+  
+  // Dynamically load 12 images into the gallery
+  const imagePaths = Array.from({ length: 12 }, (_, i) => `image/image_${i + 1}.jpg`);
+  const gallery = document.getElementById("gallery");
+  
+  imagePaths.forEach((src) => {
+    const container = document.createElement("div");
+    container.classList.add("container");
+  
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = `Image ${src}`;
+    img.onclick = () => openModal(img);
+  
+    container.appendChild(img);
+    gallery.appendChild(container);
+  });
+  
+  // Function to call OpenAI API directly
+  async function generateImageDescription(imageSrc) {
+      const apiUrl = "https://api.openai.com/v1/completions"; // OpenAI API endpoint
+      const apiKey = "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"; // Replace with your actual API key
+  
+      const prompt = `Generate a detailed description for an image with the URL: ${imageSrc}`;
+  
+      try {
+          const response = await fetch(apiUrl, {
+              method: "POST",
+              headers: {
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${apiKey}`,
+              },
+              body: JSON.stringify({
+                  model: "text-davinci-003",
+                  prompt: prompt,
+                  max_tokens: 100,
+              }),
+          });
+  
+          if (!response.ok) {
+              const error = await response.json();
+              console.error("OpenAI Error:", error);
+              throw new Error(error.error.message);
+          }
+  
+          const data = await response.json();
+          return data.choices[0].text.trim();
+      } catch (error) {
+          console.error("Error generating description:", error);
+          throw error;
+      }
+  }
+  
+  // Open modal and use AI to generate information
+  async function openModal(img) {
+      modal.style.display = "block";
+      modalImg.src = img.src;
+      currentImageSrc = img.src;
+  
+      // Generate or load image information
+      if (!imageInfoMap[currentImageSrc]) {
+          infoText.value = "Generating information...";
+          try {
+              const generatedInfo = await generateImageDescription(img.src);
+              imageInfoMap[currentImageSrc] = generatedInfo;
+              infoText.value = generatedInfo;
+          } catch (error) {
+              infoText.value = "Failed to generate information. Please try again.";
+          }
+      } else {
+          infoText.value = imageInfoMap[currentImageSrc];
+      }
+  }
+  
+  // Close modal
+  span.onclick = function() {
+      modal.style.display = "none";
+  }
+  
+  // Save info
+  function saveInfo() {
+      const info = infoText.value.trim();
+      imageInfoMap[currentImageSrc] = info;
+      alert("Information saved!");
+  }
+  </script>
+  
 
 </body>
 </html>
