@@ -1,58 +1,143 @@
 
 
-  <!DOCTYPE html>
-  <html>
-  <head>
-  <title>Gallery</title>
-  <style>
-    .gallery {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr); /* 3 cột cho hàng đầu tiên */
-      gap: 20px; 
-    }
-  
-  
-    .container {
-      display: flex;
-      flex-direction: column;
-      align-items: center; /* Căn giữa theo chiều ngang */
-    }
-  
-    img {
-      width: 200px; /* Chiều rộng bằng 100% kích thước container */
-      height: 300px; /* Chiều cao tự động điều chỉnh theo tỷ lệ */
-      object-fit: cover;
-    }
-  </style>
-  </head>
-  <body>
-  
-  <div class="gallery">
-      <div class="container">
-        <img src="image/image_1.jpg" alt="Image 1">
-        <button onclick="window.location.href='image_html/image1.html'">Thông tin</button>
-      </div>
-      <div class="container">
-        <img src="image/image_2.jpg" alt="Image 2">
-        <button onclick="window.location.href='image_html/image2.html'">Thông tin</button>
-      </div>
-      <div class="container">
-        <img src="image/image_3.jpg" alt="Image 3">
-        <button onclick="window.location.href='image_html/image3.html'">Thông tin</button>
-      </div>
-      <div class="container">
-        <img src="image/image_4.jpg" alt="Image 4">
-        <button onclick="window.location.href='image_html/image4.html'">Thông tin</button>
-      </div>
-      <div class="container">
-        <img src="image/image_5.jpg" alt="Image 5">
-        <button onclick="window.location.href='image_html/image5.html'">Thông tin</button>
-      </div>
-      <div class="container">
-        <img src="image/image_6.jpg" alt="Image 6">
-        <button onclick="window.location.href='image_html/image6.html'">Thông tin</button>
-      </div>
+<!DOCTYPE html>
+<html>
+<head>
+<title>Gallery</title>
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 cột cho hàng đầu tiên */
+    gap: 20px; 
+  }
+
+  .container {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Căn giữa theo chiều ngang */
+    cursor: pointer; /* Thêm con trỏ chuột dạng bàn tay khi hover */
+  }
+
+  img {
+    width: 100%; /* Chiều rộng bằng 100% kích thước container */
+    height: auto; /* Chiều cao tự động điều chỉnh theo tỷ lệ */
+    object-fit: cover;
+    transition: transform 0.3s ease; /* Thêm hiệu ứng chuyển đổi mượt mà */
+  }
+
+  .container:hover img {
+    transform: scale(1.1); /* Phóng to hình ảnh khi hover */
+  }
+
+  /* CSS cho modal */
+  .modal {
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    background-color: rgba(0,0,0,0.4); 
+    padding-top: 60px;
+  }
+
+  .modal-content {
+    background-color: #fefefe;
+    margin: 5% auto; 
+    padding: 20px;
+    border: 1px solid #888;
+    width: 60%; 
+  }
+
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .close:hover,
+  .close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+
+<div class="gallery">
+    <div class="container">
+      <img src="image/image_1.jpg" alt="Image 1" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_2.jpg" alt="Image 2" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_3.jpg" alt="Image 3" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_4.jpg" alt="Image 4" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_5.jpg" alt="Image 5" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_6.jpg" alt="Image 6" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_7.jpg" alt="Image 7" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_8.jpg" alt="Image 8" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_9.jpg" alt="Image 9" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_10.jpg" alt="Image 10" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_11.jpg" alt="Image 11" onclick="openModal(this)">
+    </div>
+    <div class="container">
+      <img src="image/image_12.jpg" alt="Image 12" onclick="openModal(this)">
+    </div>
+</div>
+
+<div id="myModal" class="modal">
+
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    <img id="modalImage" src="" style="width: 100%;">
   </div>
-  
-  </body>
-  </html>
+
+</div>
+
+<script>
+// Lấy modal
+var modal = document.getElementById("myModal");
+
+// Lấy ảnh trong modal
+var modalImg = document.getElementById("modalImage");
+
+// Lấy nút close
+var span = document.getElementsByClassName("close")[0];
+
+// Hàm mở modal
+function openModal(img) {
+  modal.style.display = "block";
+  modalImg.src = img.src;
+}
+
+// Đóng modal khi click vào nút close
+span.onclick = function() { 
+  modal.style.display = "none";
+}
+</script>
+
+</body>
+</html>
